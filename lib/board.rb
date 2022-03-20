@@ -8,6 +8,7 @@ class String
     "\e[41m#{self}\e[0m"
   end
 end
+
 # board class as a container and manager for pieces
 class Board
   def initialize
