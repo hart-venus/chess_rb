@@ -10,7 +10,7 @@ def start_game
     game_board.display
     puts "\nIt's #{white_turn ? 'white' : 'black'}'s turn."
     print '> '
-    gets.chomp
+    break if game_board.move_legal?(gets.chomp, white_turn)
   end
 end
 

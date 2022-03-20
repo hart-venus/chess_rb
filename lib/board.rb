@@ -71,5 +71,11 @@ class Board
     end
     print '   0 1 2 3 4 5 6 7'
   end
+
+  def move_legal?(move, is_white)
+    return print("Input must be 3 character long. See >help \n") unless move.length == 3
+    return print("That piece doesn't exist. See >help \n") unless move[0].valid_piece?
+    true
+  end
 end
 
