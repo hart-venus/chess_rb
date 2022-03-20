@@ -13,3 +13,43 @@ class Piece
 end
 
 # pawn piece
+class Pawn < Piece
+  def to_s
+    @is_white ? '♙' : '♟'
+  end
+end
+
+# Knight piece
+class Knight < Piece
+  def to_s
+    @is_white ? '♘' : '♞'
+  end
+end
+
+# Bishop piece
+class Bishop < Piece
+  def to_s
+    @is_white ? '♗' : '♝'
+  end
+end
+
+# Rook piece
+class Rook < Piece
+  def to_s
+    @is_white ? '♖' : '♜'
+  end
+end
+
+# Queen piece
+class Queen < Piece
+  def to_s
+    @is_white ? '♕' : '♛'
+  end
+end
+
+# King piece
+class King < Piece
+  def to_s
+    @is_white ? '♔' : '♚'
+  end
+end
