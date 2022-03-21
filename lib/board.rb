@@ -75,8 +75,24 @@ class Board
   end
 
   def make_move(move, white_turn)
-    find_piece_id(move[0], white_turn).x_coord = move[1].to_i
-    find_piece_id(move[0], white_turn).y_coord = move[2].to_i
+    piece_to_move = find_piece_id(move[0], white_turn)
+    # en passant check baby
+
+    # resets the en_passed variable for the pawns that didn't
+    pawns(white_turn).each { |pawn| pawn.en_passed = false}
+
+    # sets en_passed to true if the piece just en_passed
+    piece_to_move.en_passed = true if piece_to_move.is_a?(Pawn) && (piece_to_move.y_coord - move[2].to_i).abs == 2
+
+    piece_to_move.x_coord = move[1].to_i
+    piece_to_move.y_coord = move[2].to_i
+
+
+    delete_duplicates(white_turn)
+  end
+
+  def in_board?(x, y)
+    return true if x.between?(0,7) && y.between?(0,7)
   end
 
   def move_legal?(move, is_white)
@@ -87,6 +103,26 @@ class Board
   end
 
   private
+
+  def pawns(white)
+    return @white_pieces.select { |piece| piece.is_a? Pawn} if white
+
+    @black_pieces.select { |piece| piece.is_a? Pawn}
+  end
+
+  def delete_duplicates(white_turn)
+    pieces = white_turn ? @white_pieces : @black_pieces
+    other_pieces = white_turn ? @black_pieces : @white_pieces
+
+    piece_positions = []
+    pieces.each {|piece| piece_positions.append("#{piece.x_coord}#{piece.y_coord}") }
+
+    other_pieces.each do |piece|
+      if piece_positions.include?("#{piece.x_coord}#{piece.y_coord}")
+        white_turn ? @black_pieces.delete(piece) : @white_pieces.delete(piece)
+      end
+    end
+  end
 
   def check_legal(move, is_white, board = self)
     piece_to_move = find_piece_id(move[0], is_white)
