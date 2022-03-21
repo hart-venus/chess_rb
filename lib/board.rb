@@ -72,10 +72,38 @@ class Board
     print '   0 1 2 3 4 5 6 7'
   end
 
+  def make_move(move, white_turn)
+    puts 'hi mom'
+  end
+
   def move_legal?(move, is_white)
-    return print("Input must be 3 character long. See >help \n") unless move.length == 3
-    return print("That piece doesn't exist. See >help \n") unless move[0].valid_piece?
+    return print("Input must be 3 characters long. See >help \n") unless move.length == 3
+    return print("That piece doesn't exist. See >help \n") unless valid_piece?(move[0], is_white)
+    return print("That's an illegal move. \n") unless check_legal(move, is_white)
     true
   end
+
+  private
+
+  def check_legal(move, is_white)
+    piece_to_move = find_piece_id(move[0], is_white)
+    puts piece_to_move.to_s
+    true
+  end
+
+  def find_piece_id(id, is_white)
+    if is_white
+      @white_pieces.each { |piece| return piece if piece.id == id}
+    else
+      @black_pieces.each { |piece| return piece if piece.id == id}
+    end
+  end
+
+  def valid_piece?(id, is_white)
+    ids = []
+    is_white ? @white_pieces.each { |piece| ids.append(piece.id)} : @black_pieces.each { |piece| ids.append(piece.id)}
+    return true if ids.include?(id)
+  end
+
 end
 
