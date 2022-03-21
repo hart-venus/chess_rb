@@ -14,11 +14,12 @@ end
 
 # pawn piece
 class Pawn < Piece
-  attr_accessor :en_passed
+  attr_accessor :en_passed, :en_passe_move
 
   def initialize(id, x_coord = 0, y_coord = 0, is_white: true)
     super
     @en_passed = false
+    @en_passe_move = []
     @has_moved = false
     @initial_y_coord = @y_coord
   end
@@ -55,15 +56,22 @@ class Pawn < Piece
 
     # fourth check - en passe
     lookup_pieces = [board.look_up(x_coord - 1, y_coord), board.look_up(x_coord + 1, y_coord)]
+    @en_passe_move = []
     if is_white
 
       lookup_pieces.each do |piece|
-        moves.append("#{id}#{piece.x_coord}#{y_coord - 1}") if piece && piece.is_a?(Pawn) && piece.en_passed
+        if piece && piece.is_a?(Pawn) && piece.en_passed
+          moves.append("#{id}#{piece.x_coord}#{y_coord - 1}")
+          @en_passe_move.append("#{id}#{piece.x_coord}#{y_coord - 1}")
+        end
       end
 
     else
       lookup_pieces.each do |piece|
-        moves.append("#{id}#{piece.x_coord}#{y_coord + 1}") if piece && piece.is_a?(Pawn) && piece.en_passed
+        if piece && piece.is_a?(Pawn) && piece.en_passed
+          moves.append("#{id}#{piece.x_coord}#{y_coord + 1}")
+          @en_passe_move.append("#{id}#{piece.x_coord}#{y_coord + 1}")
+        end
       end
     end
     # final check - only allows moves that are inside the board.

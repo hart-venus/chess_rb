@@ -87,6 +87,14 @@ class Board
     piece_to_move.x_coord = move[1].to_i
     piece_to_move.y_coord = move[2].to_i
 
+    # sees is the current move is en_passant
+    if piece_to_move.is_a?(Pawn)
+      if piece_to_move.en_passe_move.include?(move)
+        piece_to_delete = look_up(piece_to_move.x_coord, white_turn ? piece_to_move.y_coord + 1 : piece_to_move.y_coord - 1)
+        white_turn ? @black_pieces.delete(piece_to_delete) : @white_pieces.delete(piece_to_delete)
+      end
+    end
+
 
     delete_duplicates(white_turn)
   end
