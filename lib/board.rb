@@ -76,6 +76,7 @@ class Board
 
   def make_move(move, white_turn)
     piece_to_move = find_piece_id(move[0], white_turn)
+
     # en passant check baby
 
     # resets the en_passed variable for the pawns that didn't
@@ -87,11 +88,16 @@ class Board
     piece_to_move.x_coord = move[1].to_i
     piece_to_move.y_coord = move[2].to_i
 
-    # sees is the current move is en_passant
+    # sees is the current move is en_passant or promotion
     if piece_to_move.is_a?(Pawn)
       if piece_to_move.en_passe_move.include?(move)
         piece_to_delete = look_up(piece_to_move.x_coord, white_turn ? piece_to_move.y_coord + 1 : piece_to_move.y_coord - 1)
         white_turn ? @black_pieces.delete(piece_to_delete) : @white_pieces.delete(piece_to_delete)
+      end
+
+      if piece_to_move.y_coord == 0 or piece_to_move.y_coord == 7
+        white_turn ? @white_pieces.append(Queen.new(piece_to_move.id, piece_to_move.x_coord, piece_to_move.y_coord)) : @black_pieces.append(Queen.new(piece_to_move.id, piece_to_move.x_coord, piece_to_move.y_coord, is_white: false))
+        white_turn ? @white_pieces.delete(piece_to_move) : @black_pieces.delete(piece_to_move)
       end
     end
 
