@@ -95,7 +95,7 @@ class Board
         white_turn ? @black_pieces.delete(piece_to_delete) : @white_pieces.delete(piece_to_delete)
       end
 
-      if piece_to_move.y_coord == 0 or piece_to_move.y_coord == 7
+      if piece_to_move.y_coord.zero? || piece_to_move.y_coord == 7
         white_turn ? @white_pieces.append(Queen.new(piece_to_move.id, piece_to_move.x_coord, piece_to_move.y_coord)) : @black_pieces.append(Queen.new(piece_to_move.id, piece_to_move.x_coord, piece_to_move.y_coord, is_white: false))
         white_turn ? @white_pieces.delete(piece_to_move) : @black_pieces.delete(piece_to_move)
       end

@@ -85,6 +85,20 @@ class Knight < Piece
   def to_s
     @is_white ? '♘' : '♞'
   end
+
+  def legal_moves(board)
+    moves = []
+    offsets = [
+      [2, 1], [2, -1],
+      [-2, 1], [-2, -1],
+      [1, 2], [1,-2],
+      [-1, 2], [-1, -2]
+    ]
+    offsets.each do |offset|
+      moves.append("#{id}#{@x_coord + (offset[0])}#{@y_coord + (offset[1])}") unless board.look_up(@x_coord + offset[0], @y_coord + offset[1]) && board.look_up(@x_coord + offset[0], @y_coord + offset[1]).is_white == @is_white
+    end
+    moves
+  end
 end
 
 # Bishop piece
