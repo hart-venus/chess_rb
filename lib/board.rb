@@ -11,6 +11,8 @@ end
 
 # board class as a container and manager for pieces
 class Board
+  attr_accessor :black_pieces, :white_pieces
+
   def initialize
     @black_pieces = [
       Rook.new('A', is_white: false),
@@ -73,7 +75,8 @@ class Board
   end
 
   def make_move(move, white_turn)
-    puts 'hi mom'
+    find_piece_id(move[0], white_turn).x_coord = move[1].to_i
+    find_piece_id(move[0], white_turn).y_coord = move[2].to_i
   end
 
   def move_legal?(move, is_white)
@@ -85,10 +88,9 @@ class Board
 
   private
 
-  def check_legal(move, is_white)
+  def check_legal(move, is_white, board = self)
     piece_to_move = find_piece_id(move[0], is_white)
-    puts piece_to_move.to_s
-    true
+    piece_to_move.legal_moves(board).include?(move)
   end
 
   def find_piece_id(id, is_white)
