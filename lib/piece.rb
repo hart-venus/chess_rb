@@ -104,6 +104,30 @@ class Bishop < Piece
   def to_s
     @is_white ? '♗' : '♝'
   end
+
+  def legal_moves(board)
+    moves = []
+    prog_offsets = [
+      [1, 1], [1, -1],
+      [-1, 1], [-1, -1]
+    ]
+    prog_offsets.each do |offset|
+      pos = [x_coord + offset[0], y_coord + offset[1]]
+
+      loop do
+        if board.look_up(pos[0], pos[1])
+          piece = board.look_up(pos[0], pos[1])
+          moves.append("#{id}#{pos[0]}#{pos[1]}") if piece.is_white != @is_white
+          break
+        end
+        break unless board.in_board?(pos[0], pos[1])
+
+        moves.append("#{id}#{pos[0]}#{pos[1]}")
+        pos = [pos[0] + offset[0], pos[1] + offset[1]]
+      end
+    end
+    moves
+  end
 end
 
 # Rook piece
