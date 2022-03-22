@@ -74,8 +74,6 @@ class Pawn < Piece
         end
       end
     end
-    # final check - only allows moves that are inside the board.
-    moves.select! { |move| board.in_board?(move[1].to_i, move[2].to_i)}
     moves
   end
 end

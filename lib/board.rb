@@ -106,12 +106,13 @@ class Board
   end
 
   def in_board?(x, y)
-    return true if x.between?(0,7) && y.between?(0,7)
+    return true if x.between?(0, 7) && y.between?(0, 7)
   end
 
   def move_legal?(move, is_white)
     return print("Input must be 3 characters long. See >help \n") unless move.length == 3
     return print("That piece doesn't exist. See >help \n") unless valid_piece?(move[0], is_white)
+    return print("That's not in the board. See >help \n") unless in_board?(move[1].to_i, move[2].to_i)
     return print("That's an illegal move. \n") unless check_legal(move, is_white)
     true
   end
