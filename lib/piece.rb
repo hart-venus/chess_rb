@@ -230,17 +230,20 @@ class King < Piece
         moves.append("#{id}#{pos[0]}#{pos[1]}")
       end
     end
-    [1,-1].each do |offset_x|
-      pos = [x_coord + offset_x, y_coord]
+    unless @has_moved
+      [1, -1].each do |offset_x|
+        pos = [x_coord + offset_x, y_coord]
 
-      loop do
-        break unless board.in_board?(pos[0], pos[1])
-        if board.look_up(pos[0] + offset_x, y_coord)&.is_a?(Rook) && board.look_up(pos[0] + offset_x, y_coord).is_white == @is_white
-          moves.append("#{id}#{pos[0]}#{pos[1]}")
+        loop do
+          break unless board.in_board?(pos[0], pos[1])
+          if board.look_up(pos[0] + offset_x, y_coord)&.is_a?(Rook) && board.look_up(pos[0] + offset_x, y_coord).is_white == @is_white &&  (!board.look_up(pos[0] + offset_x, y_coord).has_moved)
+            moves.append("#{id}#{pos[0]}#{pos[1]}")
+          end
+          break if board.look_up(pos[0], pos[1])
         end
-        break if board.look_up(pos[0], pos[1])
       end
     end
+
     moves
   end
 end
