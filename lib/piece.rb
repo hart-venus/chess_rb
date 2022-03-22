@@ -132,6 +132,13 @@ end
 
 # Rook piece
 class Rook < Piece
+  attr_accessor :has_moved
+
+  def initialize(id, x_coord = 0, y_coord = 0, is_white: true)
+    super
+    @has_moved = false
+  end
+
   def to_s
     @is_white ? '♖' : '♜'
   end
@@ -196,7 +203,44 @@ end
 
 # King piece
 class King < Piece
+  attr_accessor :has_moved
+
+  def initialize(id, x_coord = 0, y_coord = 0, is_white: true)
+    super
+    @has_moved = false
+  end
+
   def to_s
     @is_white ? '♔' : '♚'
+  end
+
+  def legal_moves(board)
+    moves = []
+    # standard 8 direction movement
+    prog_offsets = [
+      [0, 1], [1, 0],
+      [-1, 0], [0, -1],
+      [1, 1], [1, -1],
+      [-1, 1], [-1, -1]
+    ]
+    prog_offsets.each do |offset|
+      pos = [x_coord + offset[0], y_coord + offset[1]]
+
+      if board.in_board?(pos[0], pos[1]) && (board.look_up(pos[0], pos[1])&.is_white != @is_white)
+        moves.append("#{id}#{pos[0]}#{pos[1]}")
+      end
+    end
+    [1,-1].each do |offset_x|
+      pos = [x_coord + offset_x, y_coord]
+
+      loop do
+        break unless board.in_board?(pos[0], pos[1])
+        if board.look_up(pos[0] + offset_x, y_coord)&.is_a?(Rook) && board.look_up(pos[0] + offset_x, y_coord).is_white == @is_white
+          moves.append("#{id}#{pos[0]}#{pos[1]}")
+        end
+        break if board.look_up(pos[0], pos[1])
+      end
+    end
+    moves
   end
 end
