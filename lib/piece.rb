@@ -74,7 +74,14 @@ class Pawn < Piece
         end
       end
     end
-    moves
+
+    # final check. The Am I checked? Check
+    moves.each do |move|
+      test_board = Marshal.load(Marshal.dump(board))
+      test_board.check_depth +=1
+      test_board.make_move(move, @is_white)
+      moves.delete(move) if test_board.in_check?(@is_white)
+    end
   end
 end
 
@@ -94,6 +101,14 @@ class Knight < Piece
     ]
     offsets.each do |offset|
       moves.append("#{id}#{@x_coord + (offset[0])}#{@y_coord + (offset[1])}") unless board.look_up(@x_coord + offset[0], @y_coord + offset[1]) && board.look_up(@x_coord + offset[0], @y_coord + offset[1]).is_white == @is_white
+    end
+    moves.select! { |move| board.in_board?(move[1].to_i, move[2].to_i)}
+    # final check. The Am I checked? Check
+    moves.each do |move|
+      test_board = Marshal.load(Marshal.dump(board))
+      test_board.check_depth +=1
+      test_board.make_move(move, @is_white)
+      moves.delete(move) if test_board.in_check?(@is_white)
     end
     moves
   end
@@ -125,6 +140,13 @@ class Bishop < Piece
         moves.append("#{id}#{pos[0]}#{pos[1]}")
         pos = [pos[0] + offset[0], pos[1] + offset[1]]
       end
+    end
+    # final check. The Am I checked? Check
+    moves.each do |move|
+      test_board = Marshal.load(Marshal.dump(board))
+      test_board.check_depth +=1
+      test_board.make_move(move, @is_white)
+      moves.delete(move) if test_board.in_check?(@is_white)
     end
     moves
   end
@@ -164,6 +186,14 @@ class Rook < Piece
         pos = [pos[0] + offset[0], pos[1] + offset[1]]
       end
     end
+    # final check. The Am I checked? Check
+    moves.each do |move|
+      test_board = Marshal.load(Marshal.dump(board))
+      test_board.check_depth +=1
+      test_board.make_move(move, @is_white)
+      moves.delete(move) if test_board.in_check?(@is_white)
+    end
+
     moves
   end
 end
@@ -196,6 +226,13 @@ class Queen < Piece
         moves.append("#{id}#{pos[0]}#{pos[1]}")
         pos = [pos[0] + offset[0], pos[1] + offset[1]]
       end
+    end
+    # final check. The Am I checked? Check
+    moves.each do |move|
+      test_board = Marshal.load(Marshal.dump(board))
+      test_board.check_depth +=1
+      test_board.make_move(move, @is_white)
+      moves.delete(move) if test_board.in_check?(@is_white)
     end
     moves
   end
@@ -236,7 +273,6 @@ class King < Piece
         pos = [x_coord + offset_x, y_coord]
 
         loop do
-          p pos
           break unless board.in_board?(pos[0], pos[1])
 
           break unless board.look_up(pos[0], pos[1]).nil?
@@ -249,6 +285,13 @@ class King < Piece
           pos = [pos[0] + offset_x, y_coord]
         end
       end
+    end
+    # final check. The Am I checked? Check
+    moves.each do |move|
+      test_board = Marshal.load(Marshal.dump(board))
+      test_board.check_depth +=1
+      test_board.make_move(move, @is_white)
+      moves.delete(move) if test_board.in_check?(@is_white)
     end
 
     moves

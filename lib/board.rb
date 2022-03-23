@@ -11,7 +11,7 @@ end
 
 # board class as a container and manager for pieces
 class Board
-  attr_accessor :black_pieces, :white_pieces
+  attr_accessor :black_pieces, :white_pieces, :check_depth
 
   def initialize
     @black_pieces = [
@@ -50,6 +50,26 @@ class Board
       Pawn.new('g', 6, 6),
       Pawn.new('h', 7, 6)
     ]
+    @check_depth = 0
+  end
+
+  def in_check?(white)
+    return false if @check_depth > 1
+
+    pieces = white ? @black_pieces : @white_pieces
+    pieces.each do |piece|
+      piece.legal_moves(self).each do |possible_move|
+        new_board = Marshal.load(Marshal.dump(self))
+        new_board.check_depth += 1
+        new_board.make_move(possible_move, !white)
+        if white
+          return true unless new_board.white_pieces.any?(King)
+        else
+          return true unless new_board.black_pieces.any?(King)
+        end
+      end
+    end
+    false
   end
 
   def look_up(x, y)
