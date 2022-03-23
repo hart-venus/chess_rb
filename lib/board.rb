@@ -85,6 +85,15 @@ class Board
     # sets en_passed to true if the piece just en_passed
     piece_to_move.en_passed = true if piece_to_move.is_a?(Pawn) && (piece_to_move.y_coord - move[2].to_i).abs == 2
     piece_to_move.has_moved = true if piece_to_move.is_a?(King) || piece_to_move.is_a?(Rook)
+
+    if piece_to_move.is_a?(King) && (piece_to_move.x_coord - move[1].to_i).abs > 1
+      if (piece_to_move.x_coord - move[1].to_i).positive?
+        look_up(piece_to_move.x_coord - 4, piece_to_move.y_coord).x_coord = 3
+      else
+        look_up(piece_to_move.x_coord + 3, piece_to_move.y_coord).x_coord = 5
+      end
+    end
+    # actual piece movement here
     piece_to_move.x_coord = move[1].to_i
     piece_to_move.y_coord = move[2].to_i
 

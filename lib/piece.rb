@@ -50,8 +50,8 @@ class Pawn < Piece
       moves.append("#{id}#{x_coord + 1}#{y_coord - 1}") if board.look_up(x_coord + 1, y_coord - 1) && !board.look_up(x_coord + 1, y_coord - 1).is_white 
       moves.append("#{id}#{x_coord - 1}#{y_coord - 1}") if board.look_up(x_coord - 1, y_coord - 1) && !board.look_up(x_coord - 1, y_coord - 1).is_white
     else
-      moves.append("#{id}#{x_coord + 1}#{y_coord + 1}") if board.look_up(x_coord + 1, y_coord + 1) && board.look_up(x_coord + 1, y_coord + 1).is_white
-      moves.append("#{id}#{x_coord - 1}#{y_coord + 1}") if board.look_up(x_coord - 1, y_coord + 1) && board.look_up(x_coord - 1, y_coord + 1).is_white
+      moves.append("#{id}#{x_coord + 1}#{y_coord + 1}") if board.look_up(x_coord + 1, y_coord + 1)&.is_white
+      moves.append("#{id}#{x_coord - 1}#{y_coord + 1}") if board.look_up(x_coord - 1, y_coord + 1)&.is_white
     end
 
     # fourth check - en passe
@@ -60,7 +60,7 @@ class Pawn < Piece
     if is_white
 
       lookup_pieces.each do |piece|
-        if piece && piece.is_a?(Pawn) && piece.en_passed
+        if piece.is_a?(Pawn) && piece.en_passed
           moves.append("#{id}#{piece.x_coord}#{y_coord - 1}")
           @en_passe_move.append("#{id}#{piece.x_coord}#{y_coord - 1}")
         end
@@ -68,7 +68,7 @@ class Pawn < Piece
 
     else
       lookup_pieces.each do |piece|
-        if piece && piece.is_a?(Pawn) && piece.en_passed
+        if piece.is_a?(Pawn) && piece.en_passed
           moves.append("#{id}#{piece.x_coord}#{y_coord + 1}")
           @en_passe_move.append("#{id}#{piece.x_coord}#{y_coord + 1}")
         end
@@ -230,16 +230,23 @@ class King < Piece
         moves.append("#{id}#{pos[0]}#{pos[1]}")
       end
     end
+
     unless @has_moved
       [1, -1].each do |offset_x|
         pos = [x_coord + offset_x, y_coord]
 
         loop do
+          p pos
           break unless board.in_board?(pos[0], pos[1])
-          if board.look_up(pos[0] + offset_x, y_coord)&.is_a?(Rook) && board.look_up(pos[0] + offset_x, y_coord).is_white == @is_white &&  (!board.look_up(pos[0] + offset_x, y_coord).has_moved)
-            moves.append("#{id}#{pos[0]}#{pos[1]}")
+
+          break unless board.look_up(pos[0], pos[1]).nil?
+
+          piece_off = board.look_up(pos[0] + offset_x, y_coord)
+          if piece_off.is_a?(Rook) && piece_off.is_white == @is_white && !piece_off.has_moved
+
+            moves.append("#{id}#{offset_x.positive? ? pos[0] : pos[0] - offset_x}#{pos[1]}")
           end
-          break if board.look_up(pos[0], pos[1])
+          pos = [pos[0] + offset_x, y_coord]
         end
       end
     end
