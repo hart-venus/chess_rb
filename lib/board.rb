@@ -94,6 +94,11 @@ class Board
     print '   0 1 2 3 4 5 6 7'
   end
 
+  def no_legal_moves(white)
+    pieces = white ? @white_pieces : @black_pieces
+    pieces.each { |piece| return false unless piece.legal_moves(self).empty? }
+    true
+  end
   def make_move(move, white_turn)
     piece_to_move = find_piece_id(move[0], white_turn)
 
